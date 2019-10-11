@@ -27,7 +27,8 @@ lbd = 0.1;
 y = 10;
 bet = round(0.005 + lbd / (y^2), 2); % ceil to nearest second decimal
 K = fspecial('gaussian', [9 9], 4);
-log = [];
+log1 = [];
+log2 = [];
 for c=1:3
     f = squeeze(b(:,:,c));
     u = squeeze(b(:,:,c));
@@ -36,8 +37,8 @@ for c=1:3
     + bet * (u - v_n + w/bet) );
     fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
     
-    v = newton(fnc, fncdot, ones(size(f)), 0.001, 3);
-    w = ones(size(f)) + bet .* (u - v);
+    v = newton(fnc, fncdot, u, 0.001, 3);
+    w = u + bet .* (u - v);
     
     while normX(u-u0(:,:,c))>quality
         u = tv_Minimization(v, w, bet, K, 5);
@@ -46,11 +47,13 @@ for c=1:3
         + bet * (u - v_n + w/bet) );
         fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
         
-        v = newton(fnc, fncdot, v, 0.001, 3);
+        v = newton(fnc, fncdot, v, 10, 6);
         w = w + bet .* (u - v);
-        log = [log normX(u-u0(:,:,c))];  % cannot preallocate here since number of iterations is unclear
+        log1 = [log1 normX(u-u0(:,:,c))];  % cannot preallocate here since number of iterations is unclear
+        log2 = [log2 PSNR(u0(:,:,c), u)];
         figure(1)
-        plot(1:length(log),log)
+        plot(1:length(log1),log1, '-b')%, 1:length(log2),log2, '-r')
+        legend('norm difference','PSNR')
     end
     u_all(:,:,c) = u;
 end

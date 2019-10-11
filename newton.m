@@ -3,7 +3,7 @@ function x = newton(f, fdot, init, err, maxiter)
     for n = 1:maxiter
         d = f(x)./fdot(x);
         x = x - d;
-        if abs(d) < err
+        if normX(abs(d)) < err
             return
         end
     end
