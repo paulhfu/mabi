@@ -33,19 +33,23 @@ for c=1:3
     f = squeeze(b(:,:,c));
     u = squeeze(b(:,:,c));
     
-    fnc = @(v_n)( lbd/2 .* (1/(y^2 + dotX((v_n-f), (v_n-f))) .* ones(size(f)))...
-    + bet * (u - v_n + w/bet) );
-    fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
-    
+    %fnc = @(v_n)( lbd/2 .* (1/(y^2 + dotX((v_n-f), (v_n-f))) .* ones(size(f)))...
+    %+ bet * (u - v_n + w/bet) );
+    %fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
+    fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
+    fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
+        
     v = newton(fnc, fncdot, u, 0.001, 3);
     w = u + bet .* (u - v);
     
     while normX(u-u0(:,:,c))>quality
         u = tv_Minimization(v, w, bet, K, 5);
         
-        fnc = @(v_n)( lbd/2 .* (1/(y^2 + dotX((v_n-f), (v_n-f))) .* ones(size(f)))...
-        + bet * (u - v_n + w/bet) );
-        fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
+        %fnc = @(v_n)( lbd/2 .* (1/(y^2 + dotX((v_n-f), (v_n-f))) .* ones(size(f)))...
+        %+ bet * (u - v_n + w/bet) );
+        %fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
+        fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
+        fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
         v = newton(fnc, fncdot, v, 10, 6);
         w = w + bet .* (u - v);
