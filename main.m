@@ -32,7 +32,7 @@ log2 = [];
 for c=1:3
     f = squeeze(b(:,:,c));
     u = squeeze(b(:,:,c));
-    
+    w = u; %otherwise initiated by width
     %fnc = @(v_n)( lbd/2 .* (1/(y^2 + dotX((v_n-f), (v_n-f))) .* ones(size(f)))...
     %+ bet * (u - v_n + w/bet) );
     %fncdot = @(v_n)( (-lbd .* (v_n-f)) ./ (y^2 + dotX((v_n-f), (v_n-f))) - bet .* v_n );
