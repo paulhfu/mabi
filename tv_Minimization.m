@@ -6,30 +6,27 @@ function [u] = tv_Minimization(v, w, bet, K, maxiter)
 b = bet; %lambda
 lbd = 1/b;
 g = v - w / b;
-p = ones([size(v) 2]);
+p = zeros([size(v) 2]);
 
 Nsig = normX(g-mean(mean(g)));
-tau = 1/5;
+tau = 1/10;
 
 for j=1:maxiter
-    for i=1:10
+    for i=1:5
         div_p = divergence(p(:,:,1), p(:,:,2));
-        %[grad_x, grad_y] = gradient(div_p - g * b);
         [grad_x, grad_y] = gradient(div_p - g / lbd);
         grad = grad_x;
         grad(:,:,2) = grad_y;
 
         nom = p + tau .* grad;
-        %dnom = 1 + tau .* normXX(grad);
         dnom = 1 + tau * abs(grad); %component-wise absolute value
         p = nom ./ dnom;
     end
     div_p = divergence(p(:,:,1), p(:,:,2));
     lbd = Nsig / normX(div_p); %lambda
-    g = v - w / b;
+%     b = 1 / lbd;
+%     g = v - w / b;
     Nsig = normX(g-mean(mean(g)));
-    tau = tau / 2;
-    %u = g - div_p/b;
     u = g - lbd*div_p; %(7) and Thm. 3.1
 end
 
