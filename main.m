@@ -25,8 +25,8 @@ b = b(1:d, 1:d, :);
 G = gradient_discrete_4('d', d);
 quality = 25;
 u_all = b;
-lbd = 1.5;
-y = 10;
+lbd = 1;
+y = 5;
 bet = round(0.005 + lbd / (y^2), 2); % ceil to nearest second decimal
 K = fspecial('gaussian', [9 9], 4);
 log1 = [];
@@ -50,8 +50,8 @@ for c=1:3
         l = 1/bet;
         if log2(end) > 18
             maxiter_d = 300;
-            maxiter_n = 50;
-            lbd = 1/4;
+            maxiter_n = 100;
+% %             lbd = 1/4;
         else
             maxiter_d = 50;
             maxiter_n = 10;
@@ -62,7 +62,7 @@ for c=1:3
         fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
-        v = newton(fnc, fncdot, v, 0.1, maxiter_n);
+        v = newton(fnc, fncdot, v, 0.0001, maxiter_n);
         w = w + bet .* (u - v);
         
         
