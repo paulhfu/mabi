@@ -6,10 +6,10 @@ function [x,iter] = denoising_anisotrop_tv(varargin)
 ip = inputParser;
 
 addRequired(ip,'v',@(x) size(x,2) == 1 && round(sqrt(length(x))) == sqrt(length(x)) );
-addParameter(ip,'maxIter',5000,@(x) x > 1);
+addParameter(ip,'maxIter',500,@(x) x > 1);
 addParameter(ip,'lambda',1e-3,@(x) x > 0);
-addParameter(ip,'tol',1e-6,@(x) x > 0);
-addParameter(ip,'G',[],@(x) ~isempty(x) );
+addParameter(ip,'tol',1e-2,@(x) x > 0);
+addParameter(ip,'G',[],@(x) ~isempty(x));
 addParameter(ip,'l',-inf);
 addParameter(ip,'u',inf);
 addParameter(ip,'disp',inf,@(x) x > 0);

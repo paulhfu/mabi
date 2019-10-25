@@ -18,6 +18,11 @@ subplot(1,2,1); imshow(u0); title('Original');
 subplot(1,2,2); imshow(reshape(b,[h w c])); title('Degraded');
 
 b = reshape(b,[h w c]);
+d = min([h w]);
+u0 = u0(1:d, 1:d, :);
+b = b(1:d, 1:d, :);
+
+G = gradient_discrete_4('d', d);
 quality = 100;
 u_all = b;
 lbd = 0.1;
@@ -38,7 +43,13 @@ for c=1:3
     w = u + bet .* (u - v);
     
     while normX(u-u0(:,:,c))>quality
-        u = tv_Minimization(v, w, bet, K, 5);
+        g = v - w / bet;
+        g = reshape(g,[size(g,1)*size(g,2) 1]);
+        u = reshape(u,[size(u,1)*size(u,2) 1]);
+        l = 1/bet;
+        
+        u = denoising_anisotrop_tv(u, 'lambda', l, 'v', g);
+        u = reshape(u,[d d]);
         
         fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
