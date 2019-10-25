@@ -40,7 +40,7 @@ for c=1:3
     fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
     v = newton(fnc, fncdot, u, 0.1, 30);
-    w = u + bet .* (u - v);
+    w = w + bet .* (u - v);
     
     while normX(u-u0(:,:,c))>quality
         g = v - w / bet;
