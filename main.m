@@ -51,7 +51,7 @@ for c=1:3
         u = denoising_anisotrop_tv(u, 'lambda', l, 'v', g);
         u = reshape(u,[d d]);
         
-        fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
+        fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
         v = newton(fnc, fncdot, v, 0.1, 30);
