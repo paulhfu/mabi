@@ -31,16 +31,16 @@ for c=1:3
     u = f;
     w = ones(size(u));
 
-    fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
+    fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
     fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
     v = newton(fnc, fncdot, u, 0.1, 30);
-    w = u + bet .* (u - v);
+    w = w + bet .* (u - v);
     
     while normX(u-u0(:,:,c))>quality
         u = tv_Minimization(v, w, bet, K, 5);
         
-        fnc = @(v_n) (lbd * (2*(v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
+        fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
         v = newton(fnc, fncdot, v, 0.1, 30);
