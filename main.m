@@ -5,7 +5,7 @@ clc; close all; clear all
 
 % call with some parameters
 img = randi(500);
-sigma = 0.02;
+sigma = 0.1;
 [b, u0] = denoisingLoadData('BSDS500', img, true, 'Cauchy', sigma);
 
 
@@ -25,9 +25,9 @@ b = b(1:d, 1:d, :);
 G = gradient_discrete_4('d', d);
 quality = 21;
 u_all = b;
-lbd = 0.008;
-y = 6;
-bet = 12;%round(0.005 + lbd / (y^2), 2)*40; % ceil to nearest second decimal
+lbd = 0.1;
+y = sigma;
+bet = round(0.005 + lbd / (y^2), 2)*5; % ceil to nearest second decimal
 
 for c=1:3
     log1 = [-inf];
@@ -56,7 +56,7 @@ for c=1:3
             maxiter_d = 4;
             maxiter_n = 4;
         end
-        u = denoising_anisotrop_tv(u, 'lambda', l, 'v', g, 'maxIter', maxiter_d, 'l', 0 ,'u', 1);
+        u = denoising_isotrop_tv(u, 'lambda', l, 'v', g, 'maxIter', maxiter_d, 'l', 0 ,'u', 1);
         u = reshape(u,[d d]);
         
         fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
