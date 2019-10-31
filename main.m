@@ -32,7 +32,7 @@ bet = round(0.005 + lbd / (y^2), 2)*5; % ceil to nearest second decimal
 for c=1:3
     log1 = [-inf];
     log2 = [-inf];
-    f = squeeze(b(:,:,c));
+    f = b(:,:,c);
     u = f;
     w = ones(size(f));
 

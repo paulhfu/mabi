@@ -26,17 +26,16 @@ u_all = b;
 G = gradient_discrete_4('d', d);
 
 for c=1:3
-    f = squeeze(b(:,:,c));
-    u = f;
-    g = f;
+    g = b(:,:,c);
     g = reshape(g,[size(g,1)*size(g,2) 1]);
-    u = reshape(u,[size(u,1)*size(u,2) 1]);
+    u = g;
     u = denoising_anisotrop_tv(u, 'lambda', 0.5, 'v', g, 'maxIter', 200, 'l', 0 ,'u', 1);
     u = reshape(u,[d d]);
 
     u_all(:,:,c) = u;
+    fprintf('PSNR: %d; Norm: %d \n', PSNR(u0(:,:,c), u), normX(u-u0(:,:,c)));
 end
-        figure(2)
+figure(2)
 subplot(1,2,1); imshow(u_all); title('denoised');
 subplot(1,2,2); imshow(b); title('Degraded');
 
