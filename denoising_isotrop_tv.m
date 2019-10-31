@@ -1,4 +1,4 @@
-function [x,iter] = denoising_anisotrop_tv(varargin)
+function [x,iter] = denoising_isotrop_tv(varargin)
 %
 % argmin_{l<=x<=u} lbd*|G*x|_1 + 0.5*|x-v|_2^2
 %
@@ -88,12 +88,15 @@ for i=1:maxiter
     % abs val of last column/row ist constrained <=1
     px(:,end) = max(-1,min(1,px(:,end)));
     py(end,:) = max(-1,min(1,py(end,:)));
-    % sum of squares is constrained by <=1
-    px = min(1, px.^2);
-    py = (sqrt(1-px.^2));
-    % bring p1 back to original shape
+        % bring p1 back to original shape
     py = reshape(py, [sz(1)/2, 1]);
     px = reshape(px, [sz(1)/2, 1]);
+    % sum of squares is constrained by <=1
+    %px = min(1, px.^2);
+    px = px ./ max(1, sqrt(px.^2 + py.^2));
+    %py = (sqrt(1-px.^2));
+    py = py ./ max(1, sqrt(px.^2 + py.^2));
+
     p1 = [px py];
     p1 = reshape(p1,sz);
     
