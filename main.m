@@ -30,19 +30,16 @@ y = sigma;
 bet = round(0.005 + lbd / (y^2), 2)*5; % ceil to nearest second decimal
 
 for c=1:3
-    log1 = [-inf];
-    log2 = [-inf];
+    log1 = [inf]; %log of norm difference
+    log2 = [-inf]; %log of PSNR
     f = b(:,:,c);
-    u = f;
+    u = f; %init with dimensions of observation
     w = ones(size(f));
 
-    fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
-    fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
+    v = u; %aux. var. (10)
     
-    v = newton(fnc, fncdot, u, 0.1, 30);
-    w = w + bet .* (u - v);
-    
-    log2 = [log2 PSNR(u0(:,:,c), u)];
+    log1 = [log1 normX(u-u0(:,:,c))];
+    log2 = [log2 PSNR(u0(:,:,c), u)];   
     
     while log2(end)>log2(end-1) 
         g = v - w / bet;
@@ -65,24 +62,24 @@ for c=1:3
         v = newton(fnc, fncdot, v, 0.0001, maxiter_n);
         w = w + bet .* (u - v);
         
-        
         log1 = [log1 normX(u-u0(:,:,c))];  % cannot preallocate here since number of iterations is unclear
         log2 = [log2 PSNR(u0(:,:,c), u)];
         
         figure(2)
-        subplot(2,1,1)
-%         plot(1:length(log1),log1, '-b')
+        subplot(2,2,1)
         plot(1:length(log2),log2, '-r')
+        ylabel('PSNR')
+        subplot(2,2,2)
+        plot(1:length(log1),log(log1),'-b')
+        ylabel('logarithmic norm difference')
         hold on
-        plot(1:length(log2),log2, '-r')
-%         legend('norm difference', 'PSNR')
-        subplot(2,1,2)
+        subplot(2,2,3)
         imshow(u)
     end
     u_all(:,:,c) = u;
 end
 figure(3)
-subplot(1,2,1); imshow(u_all); title('denoised');
+subplot(1,2,1); imshow(u_all); title('Denoised');
 subplot(1,2,2); imshow(b); title('Degraded');
 function ret = PSNR(u_true, u_pred)
     ret = 20 * log10(255 / normX(u_true-u_pred));
