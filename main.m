@@ -22,12 +22,12 @@ quality = 0.01;
 % init weight parameters
 lbd = 0.2;
 y = sigma;
-bet = round(0.005 + lbd / (y^2), 2)*10; % ceil to nearest second decimal
+bet = round(0.005 + lbd / (y^2), 2)*3; % ceil to nearest second decimal
 
 % set max iterations for newton method and primal dual algorithm
 maxiter_d = 10;
 maxiter_n = 5;
-
+psnr = 0;
 for c=1:3
     % init performance measures
     log1 = [inf];
@@ -69,7 +69,7 @@ for c=1:3
         log2 = [log2 PSNR(u0(:,:,c), u, d)];
         
         % plot current state
-        figure(c+1)
+        figure(2)
         suptitle({'','',sprintf('beta=%-5.2f; lambda=%-5.2f; gamma=%-5.2f;\n channel:%i; iterations:%i maxPsnr:%-5.2f', bet, lbd, y, c, itr, log2(end)),' ',' ',''})
         subplot(2,2,1)
         plot(1:length(log2),log2, '-r')
@@ -79,11 +79,16 @@ for c=1:3
         ylabel('SSIM')
         hold on
         subplot(2,2,3)
-        imshow(u)
+        imshow(u_all)
     end
     u_all(:,:,c) = u;
+    hold on
+    subplot(2,2,3)
+    imshow(u_all)
+    psnr = psnr + log2(end);
 end
-figure(5)
+psnr = psnr / 3
+figure(3)
 suptitle('Lineup')
 subplot(1,3,1); imshow(u0); title('Original');
 subplot(1,3,2); imshow(u_all); title('Denoised');
