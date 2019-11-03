@@ -88,7 +88,7 @@ for i=1:maxiter
     % abs val of last column/row ist constrained <=1
     px(:,end) = max(-1,min(1,px(:,end)));
     py(end,:) = max(-1,min(1,py(end,:)));
-        % bring p1 back to original shape
+    % bring p1 back to original shape
     py = reshape(py, [sz(1)/2, 1]);
     px = reshape(px, [sz(1)/2, 1]);
     % sum of squares is constrained by <=1

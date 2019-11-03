@@ -1,9 +1,6 @@
 clc; close all; clear all
 
-% init random seed to reproduce randomness
-% rng(42)
-
-% call with some parameters
+% get random image and a corresponding noisy image from BSDS500
 img = randi(500);
 sigma = 0.1;
 [b, u0] = denoisingLoadData('BSDS500', img, true, 'Cauchy', sigma);
@@ -13,12 +10,12 @@ h = size(u0, 1); % image height
 w = size(u0, 2); % image width
 c = size(u0, 3); % number of channels
 
-b = reshape(b,[h w c]);  % reshape two two dim
-% crop to largest square in image, init variables
-d = min([h w]);
-u0 = u0(1:d, 1:d, :);
-b = b(1:d, 1:d, :);
-u_all = zeros(size(b));
+b = reshape(b,[h w c]);  % reshape to image dimensions
+% crop to largest square in image
+d = min([h w]);  % side length of largest square in image
+u0 = u0(1:d, 1:d, :);  % cropped original image
+b = b(1:d, 1:d, :);  % cropped noisy image
+u_all = zeros(size(b));  % container for denoised image
 
 % init weight parameters
 lbd = 0.1;
@@ -30,35 +27,41 @@ maxiter_d = 10;
 maxiter_n = 5;
 
 for c=1:3
-    log1 = [inf]; %log of norm difference
-    log2 = [-inf]; %log of PSNR
+    % init performance measures
+    log1 = [inf];
+    log2 = [-inf];
     f = b(:,:,c);
     u = f; %init with dimensions of observation
     w = ones(size(f));
 
     v = u; %aux. var. (10)
     
-    log1 = [log1 normX(u-u0(:,:,c))];
-    log2 = [log2 PSNR(u0(:,:,c), u)];   
+    % logging performance measures
+    log1 = [log1 ssim(u, u0(:,:,c))];  % structural similarity measure (close to one is optimal)
+    log2 = [log2 PSNR(u0(:,:,c), u)];  % peak signal to noise ratio (higher value correponds to better performance) 
     
-    while log2(end)>log2(end-1) 
-        g = v - w / bet;
+    while log2(end)>log2(end-1)  % iterate as long as performance is improving
+        g = v - w / bet;  % prior for denoising_isotrop_tv
+        % vectorize
         g = reshape(g,[size(g,1)*size(g,2) 1]);
         u = reshape(u,[size(u,1)*size(u,2) 1]);
-        l = 1/bet;
+        lambda = 1/bet;
 
-        u = denoising_isotrop_tv(u, 'lambda', l, 'v', g, 'maxIter', maxiter_d, 'l', 0 ,'u', 1);
-        u = reshape(u,[d d]);
+        % update primal solution
+        u = denoising_isotrop_tv(u, 'lambda', lambda, 'v', g, 'maxIter', maxiter_d, 'l', 0 ,'u', 1);
+        u = reshape(u,[d d]);  % back to image dimensions
         
         % first derivative for objective function of v
         fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         % second derivative for objective function of v
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
         
-        v = newton(fnc, fncdot, v, 0.0001, maxiter_n);
+        % update auxiliary variable w´v
+        v = newton(fnc, fncdot, v, maxiter_n);
+        % update dual variable w
         w = w + bet .* (u - v);
         
-        % logging the performance measures
+        % logging performance measures
         log1 = [log1 ssim(u, u0(:,:,c))];
         log2 = [log2 PSNR(u0(:,:,c), u)];
         
