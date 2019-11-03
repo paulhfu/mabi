@@ -1,7 +1,8 @@
 clc; close all; clear all
 
 % get random image and a corresponding noisy image from BSDS500
-img = randi(500);
+% img = randi(500);
+img = 20;
 sigma = 0.1;
 [b, u0] = denoisingLoadData('BSDS500', img, true, 'Cauchy', sigma);
 
@@ -19,9 +20,9 @@ u_all = zeros(size(b));  % container for denoised image
 quality = 0.01;
 
 % init weight parameters
-lbd = 0.1;
+lbd = 0.2;
 y = sigma;
-bet = round(0.005 + lbd / (y^2), 2)*5; % ceil to nearest second decimal
+bet = round(0.005 + lbd / (y^2), 2)*10; % ceil to nearest second decimal
 
 % set max iterations for newton method and primal dual algorithm
 maxiter_d = 10;
@@ -40,8 +41,9 @@ for c=1:3
     % logging performance measures
     log1 = [log1 ssim(u, u0(:,:,c))];  % structural similarity measure (close to one is optimal)
     log2 = [log2 PSNR(u0(:,:,c), u, d)];  % peak signal to noise ratio (higher value correponds to better performance) 
-    
+    itr = 1;
     while log2(end)-log2(end-1) > quality  % iterate as long as performance is improving
+        itr = itr + 1;
         g = v - w / bet;  % prior for denoising_isotrop_tv
         % vectorize
         g = reshape(g,[size(g,1)*size(g,2) 1]);
@@ -67,7 +69,8 @@ for c=1:3
         log2 = [log2 PSNR(u0(:,:,c), u, d)];
         
         % plot current state
-        figure(2)
+        figure(c+1)
+        suptitle({'','',sprintf('beta=%-5.2f; lambda=%-5.2f; gamma=%-5.2f;\n channel:%i; iterations:%i maxPsnr:%-5.2f', bet, lbd, y, c, itr, log2(end)),' ',' ',''})
         subplot(2,2,1)
         plot(1:length(log2),log2, '-r')
         ylabel('PSNR')
@@ -80,7 +83,8 @@ for c=1:3
     end
     u_all(:,:,c) = u;
 end
-figure(3)
+figure(5)
+suptitle('Lineup')
 subplot(1,3,1); imshow(u0); title('Original');
 subplot(1,3,2); imshow(u_all); title('Denoised');
 subplot(1,3,3); imshow(b); title('Noisy');
