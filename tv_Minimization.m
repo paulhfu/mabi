@@ -1,4 +1,4 @@
-function [u] = tv_Minimization(v, w, bet, K, maxiter)
+function [u] = tv_MinimizationChambolle(v, w, bet, K, maxiter)
 % Algorithm based on: Chambolle, A.: An algorithm for total variation minimization and applications. J. Math. Imaging Vis.20,89–97 (2004)
 % The objective this algorith is applied on is different though. It is the
 % first step(line 11) on Algorithm 1 in: Cauchy Noise Removal by Nonconvex ADMM with Convergence Guarantees,

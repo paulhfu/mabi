@@ -5,7 +5,7 @@ clc; close all; clear all
 
 % call with some parameters
 img = randi(500);
-sigma = 0.01;
+sigma = 0.04;
 [b, u0] = denoisingLoadData('BSDS500', img, true, 'Cauchy', sigma);
 
 
@@ -34,7 +34,7 @@ for c=1:3
     v = u;
     
     while normX(u-u0(:,:,c))>quality
-        u = tv_Minimization(v, w, bet, K, 5);
+        u = tv_MinimizationChambolle(v, w, bet, K, 5);
         
         fnc = @(v_n) (lbd * ((v_n-f) ./ (y^2 + (v_n-f).^2)) - bet * (u - v_n + w/bet));
         fncdot = @(v_n) (lbd * (y^2-(v_n-f).^2) ./ (y^2 + (v_n-f).^2).^2 + bet * ones(size(v_n)));
