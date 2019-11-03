@@ -55,7 +55,7 @@ for i=1:maxiter
    
     % Create Primal Solution
     y = v - lbd*G'*r;    % Gradient step
-    x = max(l,min(u,y)); % Proximal map
+    x = max(l,min(u,y)); % Proximal map P_C
     
     if( par.out > 0 )
       iter(i,1) = 0.5*norm(x-v,2)^2 + lbd*norm(G*x,1);
@@ -85,21 +85,21 @@ for i=1:maxiter
     p1 = reshape(p1,[sz(1)/2, 2]);
     px = reshape(p1(:,1), [d-1, d]);
     py = reshape(p1(:,2), [d, d-1]);
-    % abs val of last column/row ist constrained <=1
+    
+    %P_P projection: abs val of last column/row ist constrained <=1
     px(:,end) = max(-1,min(1,px(:,end)));
     py(end,:) = max(-1,min(1,py(end,:)));
+    
     % bring p1 back to original shape
     py = reshape(py, [sz(1)/2, 1]);
     px = reshape(px, [sz(1)/2, 1]);
-    % sum of squares is constrained by <=1
-    %px = min(1, px.^2);
+    
+    %P_P projection
     px = px ./ max(1, sqrt(px.^2 + py.^2));
-    %py = (sqrt(1-px.^2));
     py = py ./ max(1, sqrt(px.^2 + py.^2));
 
     p1 = [px py];
     p1 = reshape(p1,sz);
-    
     
     % Extrapolation
     t1 = (1 + sqrt(1 + 4*t0^2))/2;    
