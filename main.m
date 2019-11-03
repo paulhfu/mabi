@@ -70,7 +70,7 @@ for c=1:3
         
         % plot current state
         figure(2)
-        suptitle({'','',sprintf('beta=%-5.2f; lambda=%-5.2f; gamma=%-5.2f;\n channel:%i; iterations:%i maxPsnr:%-5.2f', bet, lbd, y, c, itr, log2(end)),' ',' ',''})
+        %suptitle({'','',sprintf('beta=%-5.2f; lambda=%-5.2f; gamma=%-5.2f;\n channel:%i; iterations:%i maxPsnr:%-5.2f', bet, lbd, y, c, itr, log2(end)),' ',' ',''})
         subplot(2,2,1)
         plot(1:length(log2),log2, '-r')
         ylabel('PSNR')
@@ -89,7 +89,7 @@ for c=1:3
 end
 psnr = psnr / 3
 figure(3)
-suptitle('Lineup')
+%suptitle('Lineup')
 subplot(1,3,1); imshow(u0); title('Original');
 subplot(1,3,2); imshow(u_all); title('Denoised');
 subplot(1,3,3); imshow(b); title('Noisy');

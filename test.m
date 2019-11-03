@@ -32,7 +32,7 @@ for c=1:3
 end
 psnr = psnr/3;
 figure(1)
-suptitle(sprintf('Lineup\niterations:200 maxPsnr:%-5.2f', psnr))
+%suptitle(sprintf('Lineup\niterations:200 maxPsnr:%-5.2f', psnr))
 subplot(1,3,1); imshow(u0); title('Original');
 subplot(1,3,2); imshow(u_all); title('Denoised');
 subplot(1,3,3); imshow(b); title('Noisy');
