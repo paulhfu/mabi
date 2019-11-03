@@ -9,7 +9,7 @@ g = v - w / b;
 p = zeros([size(v) 2]);
 
 Nsig = normX(g-mean(mean(g)));
-tau = 1/10;
+tau = 1/10; %has to be <= 1/8
 
 for j=1:maxiter
     for i=1:5
