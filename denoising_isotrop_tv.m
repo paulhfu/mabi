@@ -55,7 +55,7 @@ for i=1:maxiter
    
     % Create Primal Solution
     y = v - lbd*G'*r;    % Gradient step
-    x = max(l,min(u,y)); % Proximal map
+    x = max(l,min(u,y)); % Proximal map P_C
     
     if( par.out > 0 )
       iter(i,1) = 0.5*norm(x-v,2)^2 + lbd*norm(G*x,1);
