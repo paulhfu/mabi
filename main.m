@@ -16,6 +16,7 @@ d = min([h w]);  % side length of largest square in image
 u0 = u0(1:d, 1:d, :);  % cropped original image
 b = b(1:d, 1:d, :);  % cropped noisy image
 u_all = zeros(size(b));  % container for denoised image
+quality = 0.01;
 
 % init weight parameters
 lbd = 0.1;
@@ -38,9 +39,9 @@ for c=1:3
     
     % logging performance measures
     log1 = [log1 ssim(u, u0(:,:,c))];  % structural similarity measure (close to one is optimal)
-    log2 = [log2 PSNR(u0(:,:,c), u)];  % peak signal to noise ratio (higher value correponds to better performance) 
+    log2 = [log2 PSNR(u0(:,:,c), u, d)];  % peak signal to noise ratio (higher value correponds to better performance) 
     
-    while log2(end)>log2(end-1)  % iterate as long as performance is improving
+    while log2(end)-log2(end-1) > quality  % iterate as long as performance is improving
         g = v - w / bet;  % prior for denoising_isotrop_tv
         % vectorize
         g = reshape(g,[size(g,1)*size(g,2) 1]);
@@ -63,7 +64,7 @@ for c=1:3
         
         % logging performance measures
         log1 = [log1 ssim(u, u0(:,:,c))];
-        log2 = [log2 PSNR(u0(:,:,c), u)];
+        log2 = [log2 PSNR(u0(:,:,c), u, d)];
         
         % plot current state
         figure(2)
@@ -84,7 +85,7 @@ subplot(1,3,1); imshow(u0); title('Original');
 subplot(1,3,2); imshow(u_all); title('Denoised');
 subplot(1,3,3); imshow(b); title('Noisy');
 
-function ret = PSNR(u_true, u_pred)
-% peak signal to noise ratio performance measure
-    ret = 20 * log10(255 / normX(u_true-u_pred));
+function ret = PSNR(u_true, u_pred, n)
+% peak signal to noise ratio performance measure of 1-normalized images 
+    ret = 20 * log10(n / normX(u_true-u_pred));
 end

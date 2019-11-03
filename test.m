@@ -26,7 +26,7 @@ for c=1:3
     u = reshape(u,[d d]);
 
     u_all(:,:,c) = u;
-    fprintf('PSNR: %d; SSIM: %d \n', PSNR(u0(:,:,c), u), ssim(u0(:,:,c), u));
+    fprintf('PSNR: %d; SSIM: %d \n', PSNR(u0(:,:,c), u, d), ssim(u0(:,:,c), u));
 end
 figure(1)
 subplot(1,3,1); imshow(u0); title('Original');
@@ -34,7 +34,7 @@ subplot(1,3,2); imshow(u_all); title('Denoised');
 subplot(1,3,3); imshow(b); title('Noisy');
 
 
-function ret = PSNR(u_true, u_pred)
-    ret = 20 * log10(255 / normX(u_true-u_pred));
+function ret = PSNR(u_true, u_pred, n)
+    ret = 20 * log10(n / normX(u_true-u_pred));
 end
 % Type 'help denoisingLoadData'
