@@ -1,0 +1,62 @@
+%\documentclass[10pt,twocolumn,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[latin1]{inputenc}
+%\usepackage[ngerman]{babel} % ggf. auskommentieren für englische Silbentrennung
+\usepackage[english]{babel}
+
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\usepackage{xparse}
+\usepackage{physics}
+\usepackage{mathtools} %pared delimiters
+\usepackage{bbm} %\boldsymbol [deprecated, use \bm instead], needed for Laplacian symbol (source physics.sty)
+\usepackage{dsfont}
+
+\usepackage{macros} %own macros
+
+\setlength{\intextsep}{2mm plus4mm} % for the "`algorithm" package
+
+
+\setlength{\textheight}{9in}
+\setlength{\textwidth}{6.875in}
+\setlength{\columnsep}{0.3125in}
+\setlength{\topmargin}{0.325in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\parindent}{1pc}
+\setlength{\oddsidemargin}{-.304in}
+\setlength{\evensidemargin}{-.304in}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\begin{document}
+
+\title{Paul Hilt and Sebastian M\"uller -- Cauchy Noise Removal by Nonconvex ADMM\\[0.5cm] \large{Zusatzprojekt ,,Einf\"uhrung in Mathematische Bildverarbeitung'' im SS 2019}}
+
+\author{Sebastian M\"uller\\
+{\tt\small sebastian\_mueller@stud.uni-heidelberg.de}\\
+Paul Hilt\\
+{\tt\small hiltpa@gmail.com}
+}
+
+\maketitle
+
+\input{content.tex}
+
+{\small
+\bibliographystyle{unsrtdin}
+\bibliography{references.bib}
+}
+
+\end{document}

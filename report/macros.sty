@@ -1,0 +1,73 @@
+\ProvidesPackage{macros}[own macros]
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+
+\newcommand{\ind}[1]{\ensuremath{\mathbbm{1}_{#1}}} %indicator function
+\newcommand{\id}{\ensuremath{\mathds{I}}} %identity matrix
+\newcommand{\one}{\ensuremath{\mathds{1}}} %identity matrix
+
+\renewcommand{\H}{\ensuremath{\mathcal{H}}}
+\renewcommand{\L}{\ensuremath{\mathcal{L}}}
+
+\renewcommand{\vec}[1]{\vb*{\vb{#1}}} %= \renewcommand{\vec}[1]{\boldsymbol{\mathbf{#1}}}
+
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand*\Diff[1]{\mathop{}\!\mathrm{d^#1}}
+\newcommand*\Gdiff{\mathop{}\!\mathrm{D}} %Gateaux diff
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\DeclareMathOperator{\TV}{TV}
+
+\newcommand{\code}[1]{\texttt{#1}}
+
+\DeclarePairedDelimiterX{\inp}[2]{\langle}{\rangle}{#1, #2} %inner product, use * for auto sizing, [\Big] for defining size
+\renewcommand{\norm}[1]{\left\lVert#1\right\rVert} %contained in physics.sty
+
+\newcommand{\parm}{\mathord{\color{black!33}\bullet}} %placeholder, needs xcolor
+
+%%%%%%%%%%%%%%%%%%%FROM PHYSICS.STY%%%%%%%%%%%%%%%%%
+%g - optional {}
+%o - optional []
+%d() - optional ()
+
+%\IfNoValueTF{#4}{\vnabla}{\vnabla_{\vec{#4}}}
+\RenewDocumentCommand\gradient{ g o d() g }{ % Gradient
+	\IfNoValueTF{#1}{
+		\IfNoValueTF{#2}{
+			\IfNoValueTF{#3}{\IfNoValueTF{#4}{\vnabla}{\vnabla_{#4}}}{\fbraces{\lparen}{\rparen}{\IfNoValueTF{#4}{\vnabla}{\vnabla_{#4}}}{#3}}
+		}
+		{\fbraces{\lbrack}{\rbrack}{\IfNoValueTF{#4}{\vnabla}{\vnabla_{#4}}}{#2} \IfNoValueTF{#3}{}{(#3)}}
+	}
+	{\IfNoValueTF{#4}{\vnabla}{\vnabla_{#4}} #1 \IfNoValueTF{#2}{}{[#2]} \IfNoValueTF{#3}{}{(#3)}}
+}
+\DeclareDocumentCommand\grad{}{\gradient} % Shorthand for \gradient
+
+\DeclareMathOperator{\divsymbol}{div}
+%\IfNoValueTF{#4}{\divsymbol}{\divsymbol_{\vec{#4}}}
+\RenewDocumentCommand\divergence{ g o d() g }{ % Divergence
+	\IfNoValueTF{#1}{
+		\IfNoValueTF{#2}{
+			\IfNoValueTF{#3}{\IfNoValueTF{#4}{\divsymbol}{\divsymbol_{#4}}}{\IfNoValueTF{#4}{\divsymbol}{\divsymbol_{#4}} \quantity(#3)}
+		}
+		{\IfNoValueTF{#4}{\divsymbol}{\divsymbol_{#4}} \quantity[#2] \IfNoValueTF{#3}{}{(#3)}}
+	}
+	{\IfNoValueTF{#4}{\divsymbol}{\divsymbol_{#4}} #1 \IfNoValueTF{#2}{}{[#2]} \IfNoValueTF{#3}{}{(#3)}}
+}
+\RenewDocumentCommand\div{}{\divergence} % Shorthand for \divergence
+
+\DeclareMathOperator{\laplaciansymbol}{\boldsymbol{\Delta}}
+%\IfNoValueTF{#4}{\laplaciansymbol}{\laplaciansymbol_{\vec{#4}}}
+\RenewDocumentCommand\laplacian{ g o d() g }{ % Laplacian
+	\IfNoValueTF{#1}{
+		\IfNoValueTF{#2}{
+			\IfNoValueTF{#3}{\IfNoValueTF{#4}{\laplaciansymbol}{\laplaciansymbol_{#4}}}{\fbraces{\lparen}{\rparen}{\IfNoValueTF{#4}{\laplaciansymbol}{\laplaciansymbol_{#4}}}{#3}}
+		}
+		{\fbraces{\lbrack}{\rbrack}{\IfNoValueTF{#4}{\laplaciansymbol}{\laplaciansymbol_{#4}}}{#2} \IfNoValueTF{#3}{}{(#3)}}
+	}
+	{\IfNoValueTF{#4}{\laplaciansymbol}{\laplaciansymbol_{#4}} #1 \IfNoValueTF{#2}{}{[#2]} \IfNoValueTF{#3}{}{(#3)}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
